@@ -1,0 +1,6 @@
+Host hbase_*
+Port 22
+User root
+PubKeyAuthentication yes
+StrictHostKeyChecking no
+IdentityFile ~/.ssh/hbase_rsa

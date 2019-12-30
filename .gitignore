@@ -1,0 +1,5 @@
+/hdfs-config/*
+!/hdfs-config/hdfs-config.json
+/hbase-config/*
+!/hbase-config/hbase-config.json
+!/hbase-config/hbase-env.sh

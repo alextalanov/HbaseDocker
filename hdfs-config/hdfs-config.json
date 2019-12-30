@@ -1,0 +1,8 @@
+{
+	"core_site": {
+		"fs.defaultFS": "hdfs://namenode:9000"
+	},
+	"hdfs_site": {
+		"dfs.namenode.http-address": "0.0.0.0:9870"
+	}
+}

@@ -1,0 +1,96 @@
+version: "3.7"
+services:
+  zookeeper:
+    container_name: zookeeper
+    entrypoint: /bin/bash run-zookeeper.sh --myid 1
+    image: "docker.io/dockeralexandrtalan/zookeeper"
+    volumes:
+      - ./zookeeper-config:/usr/local/lib/apache-zookeeper-3.5.6-bin/conf
+    ports:
+      - "2181:2181"
+    networks:
+      - hbase
+
+  namenode:
+    container_name: namenode
+    image: "docker.io/dockeralexandrtalan/hadoop"
+    entrypoint: /bin/bash entrypoint.sh --command "hdfs start namenode" --config "/usr/local/lib/hadoop-2.9.2/etc/hadoop/hdfs-config.json"
+    volumes:
+      - ./hdfs-config:/usr/local/lib/hadoop-2.9.2/etc/hadoop/
+    ports:
+      - "9870:9870"
+    networks:
+      - hbase
+  datanode:
+    container_name: datanode
+    image: "docker.io/dockeralexandrtalan/hadoop"
+    entrypoint: /bin/bash entrypoint.sh --command "hdfs start datanode" --config "/usr/local/lib/hadoop-2.9.2/etc/hadoop/hdfs-config.json"
+    volumes:
+      - ./hdfs-config:/usr/local/lib/hadoop-2.9.2/etc/hadoop/
+    networks:
+      - hbase
+    depends_on:
+      - namenode
+
+  hbase_master:
+    container_name: hbase_master
+    image: "hbase"
+    entrypoint: /bin/bash entrypoint.sh --command "master" --config "/root/hbase-2.2.2/conf/hbase-config.json"
+    volumes:
+      - ./hbase-config:/root/hbase-2.2.2/conf
+      - ssh_hbase:/root/.ssh/hbase
+    ports:
+      - "16010:16010"
+    depends_on:
+      - zookeeper
+      - datanode
+    networks:
+      - hbase
+
+  hbase_region_server_1:
+    container_name: hbase_region_server_1
+    image: "hbase"
+    entrypoint: /bin/bash entrypoint.sh --command "slave" --config "/root/hbase-2.2.2/conf/hbase-config.json"
+    volumes:
+      - ./hbase-config:/root/hbase-2.2.2/conf
+      - ssh_hbase:/root/.ssh/hbase
+    ports:
+      - "16030:16030"
+    depends_on:
+      - hbase_master
+    networks:
+      - hbase
+
+  hbase_region_server_2:
+    container_name: hbase_region_server_2
+    image: "hbase"
+    entrypoint: /bin/bash entrypoint.sh --command "slave" --config "/root/hbase-2.2.2/conf/hbase-config.json"
+    volumes:
+      - ./hbase-config:/root/hbase-2.2.2/conf
+      - ssh_hbase:/root/.ssh/hbase
+    ports:
+      - "16031:16030"
+    depends_on:
+      - hbase_master
+    networks:
+      - hbase
+
+  hbase_backup_master:
+    container_name: hbase_backup_master
+    image: "hbase"
+    entrypoint: /bin/bash entrypoint.sh --command "slave" --config "/root/hbase-2.2.2/conf/hbase-config.json"
+    volumes:
+      - ./hbase-config:/root/hbase-2.2.2/conf
+      - ssh_hbase:/root/.ssh/hbase
+    ports:
+      - "16011:16010"
+    depends_on:
+      - hbase_master
+    networks:
+      - hbase
+
+networks:
+  hbase:
+
+volumes:
+  ssh_hbase:
