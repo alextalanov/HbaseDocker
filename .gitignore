@@ -3,3 +3,6 @@
 /hbase-config/*
 !/hbase-config/hbase-config.json
 !/hbase-config/hbase-env.sh
+/HbaseClient/.idea
+/HbaseClient/project
+/HbaseClient/target

@@ -3,6 +3,7 @@
 		"fs.defaultFS": "hdfs://namenode:9000"
 	},
 	"hdfs_site": {
-		"dfs.namenode.http-address": "0.0.0.0:9870"
+		"dfs.namenode.http-address": "0.0.0.0:9870",
+		"dfs.datanode.max.transfer.threads": 4096
 	}
 }

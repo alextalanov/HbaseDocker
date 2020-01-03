@@ -21,8 +21,19 @@ services:
       - "9870:9870"
     networks:
       - hbase
-  datanode:
-    container_name: datanode
+  datanode_1:
+    container_name: datanode_1
+    image: "docker.io/dockeralexandrtalan/hadoop"
+    entrypoint: /bin/bash entrypoint.sh --command "hdfs start datanode" --config "/usr/local/lib/hadoop-2.9.2/etc/hadoop/hdfs-config.json"
+    volumes:
+      - ./hdfs-config:/usr/local/lib/hadoop-2.9.2/etc/hadoop/
+    networks:
+      - hbase
+    depends_on:
+      - namenode
+
+  datanode_2:
+    container_name: datanode_2
     image: "docker.io/dockeralexandrtalan/hadoop"
     entrypoint: /bin/bash entrypoint.sh --command "hdfs start datanode" --config "/usr/local/lib/hadoop-2.9.2/etc/hadoop/hdfs-config.json"
     volumes:
@@ -43,7 +54,7 @@ services:
       - "16010:16010"
     depends_on:
       - zookeeper
-      - datanode
+      - namenode
     networks:
       - hbase
 
@@ -84,6 +95,17 @@ services:
       - ssh_hbase:/root/.ssh/hbase
     ports:
       - "16011:16010"
+    depends_on:
+      - hbase_master
+    networks:
+      - hbase
+
+  hbase_client:
+    container_name: hbase_client
+    build:
+      context: ./HbaseClient
+    volumes:
+      - ./HbaseClient:/root/hbase_client
     depends_on:
       - hbase_master
     networks:
