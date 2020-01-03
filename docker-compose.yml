@@ -102,8 +102,7 @@ services:
 
   hbase_client:
     container_name: hbase_client
-    build:
-      context: ./HbaseClient
+    image: docker.io/dockeralexandrtalan/sbt
     volumes:
       - ./HbaseClient:/root/hbase_client
     depends_on:
