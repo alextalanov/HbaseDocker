@@ -1,4 +1,4 @@
-FROM dockeralexandrtalan/java11
+FROM dockeralexandrtalan/java8
 
 ARG APP=/usr/local/bin
 ARG HBASE_ARHIVE=hbase-2.2.2-bin.tar.gz
